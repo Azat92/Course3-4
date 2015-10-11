@@ -1,5 +1,5 @@
 //
-//  LoggingArray.h
+//  ClassResolver.h
 //  Lesson4
 //
 //  Created by Azat Almeev on 11.10.15.
@@ -8,6 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSMutableArray (Logging)
+@interface ClassResolver : NSObject
 
 @end
