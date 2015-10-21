@@ -47,7 +47,7 @@ typedef id (*IMP)(id, SEL, ...);
     NSString *superClassName = [classAndSuperClassName objectForKey:@"superClassName"];
     NSLog(@"CLASS NAME: %@",className);
     
-    Class theStubClass = NSClassFromString(className);
+//    Class theStubClass = NSClassFromString(className);
     Class superClass = NSClassFromString(superClassName);
     Class stubClass = objc_allocateClassPair(superClass, [className cStringUsingEncoding:NSUTF8StringEncoding], 0);
 
@@ -56,46 +56,48 @@ typedef id (*IMP)(id, SEL, ...);
     for (NSDictionary* prop in [self parsePropertiesFromString:str]) {
         NSLog(@"PROP: %@",prop);
         NSString *type = [prop objectForKey:@"type"];
-//        char tEncoder;
-//        CFStringRef ts = CFStringCreateWithCString(kCFAllocatorDefault, [type cStringUsingEncoding:NSUTF8StringEncoding], kCFStringEncodingUTF8);
-//        Class myClass = NSClassFromString(typeName);
-//        const char myObject = *[[[theStubClass alloc] init] objCType];
-//        @encode(myObject);
-//        if ([type isEqual:@"char"]) {
-//            tEncoder = 'c';
-//        } else if ([type isEqual:@"int"]){
-//            NSLog(@"YEEES");
-//            tEncoder = 'i';
-//        } else if ([type isEqual:@"short"]){
-//            tEncoder = 's';
-//        } else if ([type isEqual:@"long"]){
-//            tEncoder = 'l';
-//        } else if ([type isEqual:@"float"]){
-//            tEncoder = 'f';
-//        } else if ([type isEqual:@"double"]){
-//            tEncoder = 's';
-//        } else if ([type isEqual:@"void"]){
-//            tEncoder = 'v';
-//        } else if (NSClassFromString(type)){
-//            tEncoder = '@';
-//        }
-//        NSLog(@"ENCODER: %c",tEncoder);
-
-        
-//        objc_property_attribute_t type = { "T", "@\"NSString\"" };
-//        objc_property_attribute_t ownership = { "C", "" }; // C = copy
-//        objc_property_attribute_t backingivar  = { "V", "privateName" };
-//        objc_property_attribute_t attrs[] = { type, ownership, backingivar };
-//        class_addProperty(stubClass, <#const char *name#>, <#const objc_property_attribute_t *attributes#>, <#unsigned int attributeCount#>)
+        /*
+        char tEncoder;
+        CFStringRef ts = CFStringCreateWithCString(kCFAllocatorDefault, [type cStringUsingEncoding:NSUTF8StringEncoding], kCFStringEncodingUTF8);
+        Class myClass = NSClassFromString(typeName);
+        const char myObject = *[[[theStubClass alloc] init] objCType];
+        @encode(myObject);
+        if ([type isEqual:@"char"]) {
+            tEncoder = 'c';
+        } else if ([type isEqual:@"int"]){
+            NSLog(@"YEEES");
+            tEncoder = 'i';
+        } else if ([type isEqual:@"short"]){
+            tEncoder = 's';
+        } else if ([type isEqual:@"long"]){
+            tEncoder = 'l';
+        } else if ([type isEqual:@"float"]){
+            tEncoder = 'f';
+        } else if ([type isEqual:@"double"]){
+            tEncoder = 's';
+        } else if ([type isEqual:@"void"]){
+            tEncoder = 'v';
+        } else if (NSClassFromString(type)){
+            tEncoder = '@';
+        }
+        NSLog(@"ENCODER: %c",tEncoder);
+         */
+        const char propName =  *[[prop objectForKey:@"name"] cStringUsingEncoding:NSUTF8StringEncoding];
+                                        // как получить
+        objc_property_attribute_t typeAttr = { "T", "@\"NSString\"" };
+        objc_property_attribute_t ownership = { "", "" }; // memory managment
+        objc_property_attribute_t backingivar  = { "V", &propName };
+        objc_property_attribute_t attrs[] = { typeAttr, ownership, backingivar };
+        class_addProperty(stubClass, &prop, attrs, <#unsigned int attributeCount#>)
     }
+    
+    // С методами тоже самое, если конечно там из селектора нельзя типы взять
     for (NSString* method in [self parseMethodsFromString:str]) {
 //        SEL mySelector = sel_registerName("myMethod");
         SEL aSelector =(SEL) NSSelectorFromString(method);
 //        class_addMethod(<#__unsafe_unretained Class cls#>, <#SEL name#>, <#IMP imp#>, <#const char *types#>)
         NSLog(@"METHOD :%@",method);
     }
-    
-    id myObject = [[theStubClass alloc] init];
     
     objc_registerClassPair(stubClass);
      id myInstance = [[stubClass alloc] init];
