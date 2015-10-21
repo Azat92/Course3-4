@@ -6,9 +6,10 @@
 //  Copyright © 2015 Azat Almeev. All rights reserved.
 //
 
-@interface StubClass : NSObject
+@interface StubClass  :  NSObject
 @property (nonatomic, strong) NSNumber *n;
 @property (nonatomic) NSInteger c;
+@property int Dc;
 - (void)sayHello;
 - (id)sayHelloToCaller:(NSString *)caller;
 - (id)sayHelloToCaller:(NSString *)caller withParam:(NSNumber *)param;

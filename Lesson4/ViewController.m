@@ -17,6 +17,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
     self.myStub = [NSClassFromString(@"StubClass") new];
     self.myStub.n = @2;
     NSLog(@"%@, %@", self.myStub, self.myStub.n);
