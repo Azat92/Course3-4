@@ -21,16 +21,20 @@
     [super viewDidLoad];
     
     self.myStub = [NSClassFromString(@"StubClass") new];
-
-    self.myStub.n = @2;
-    NSLog(@"%@, %@", self.myStub, self.myStub.n);
-    self.myStub.n = @5;
-    NSLog(@"%@", self.myStub.n);
-    [self.myStub sayHello];
-//    id result = [self.myStub sayHelloToCaller:@"sd"];
-    id result = [self.myStub sayHelloToCaller:@"sdf" withParam:@2];
+    
+//    [NSClassFromString(@"StubClass") classMethod];
+//    id result = [NSClassFromString(@"StubClass") classMethodReturn];
+    id result = [NSClassFromString(@"StubClass") classMethodReturnWithParam:@2];
     NSLog(@"%@", result);
-
+//    self.myStub.n = @2;
+//    NSLog(@"%@, %@", self.myStub, self.myStub.n);
+//    self.myStub.n = @5;
+//    NSLog(@"%@", self.myStub.n);
+//    [self.myStub sayHello];
+////    id result = [self.myStub sayHelloToCaller:@"sd"];
+//    id result = [self.myStub sayHelloToCaller:@"sdf" withParam:@2];
+//    NSLog(@"%@", result);
+    
 }
 
 @end

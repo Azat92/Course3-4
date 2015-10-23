@@ -125,8 +125,8 @@ NSString * const PropertyString = @"@property";
         } else if ([string containsString:@"-"] || [string containsString:@"+"]) {
             NSString *methodFullString = [string stringByReplacingOccurrencesOfString:@"-" withString:@""];
             methodFullString = [string stringByReplacingOccurrencesOfString:@"+" withString:@""];
-//            methodFullString = [string stringByReplacingOccurrencesOfString:@" " withString:@""];
-            NSRange range = [string rangeOfString:@")"];
+
+            NSRange range = [methodFullString rangeOfString:@")"];
             if (range.location != NSNotFound) {
                 methodFullString = [methodFullString substringFromIndex:range.location + 1];
                 methodFullString = [methodFullString stringByReplacingOccurrencesOfString:@";" withString:@""];
@@ -154,7 +154,12 @@ NSString * const PropertyString = @"@property";
                 } else {
                     methodString = methodFullString;
                 }
-                class_addMethod(myClass, NSSelectorFromString(methodString), (IMP)simpleMethod, "@@:");
+                if ([string containsString:@"-"]) {
+                    class_addMethod(myClass, NSSelectorFromString(methodString), (IMP)simpleMethod, "@@:");
+                } else if ([string containsString:@"+"]) {
+                    class_addMethod(objc_getMetaClass([NSStringFromClass(superClass) UTF8String]), NSSelectorFromString(methodString), (IMP)simpleMethod, "@@:");
+                }
+                
 //                NSLog(@"%@", methodString);
             }
         }
