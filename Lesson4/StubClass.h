@@ -8,8 +8,11 @@
 
 @interface StubClass : NSObject
 @property (nonatomic, strong) NSNumber *n;
-@property (nonatomic) NSInteger c;
+//@property (nonatomic) NSInteger c;
 - (void)sayHello;
 - (id)sayHelloToCaller:(NSString *)caller;
 - (id)sayHelloToCaller:(NSString *)caller withParam:(NSNumber *)param;
++ (void)classMethod;
++ (id)classMethodReturn;
++ (NSString *)classMethodReturnWithParam:(NSNumber *)number;
 @end
