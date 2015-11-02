@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface ClassResolver : NSObject
-
++(void)parseString:(NSString*)str;
 @end
