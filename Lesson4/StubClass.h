@@ -7,7 +7,7 @@
 //
 
 @interface StubClass  :  NSObject
-@property (nonatomic,readonly, copy) NSNumber *n;
+@property (nonatomic, copy) NSNumber *n;
 @property (readonly) NSInteger c;
 + (void)sayHello;
 - (id)sayHelloToCaller:(NSString *)caller;

@@ -7,14 +7,12 @@
 //
 
 #import "ClassResolver.h"
-
 #import "NSString+SubstringFromRight.h"
 #import <RegExCategories/RegExCategories.h>
 #import <objc/runtime.h>
 
 @interface ClassResolver()
 @property (nonatomic,readonly, copy) NSNumber *nf;
-
 @end
 
 @implementation ClassResolver
@@ -40,7 +38,7 @@
     NSDictionary *classAndSuperClassName=[self parseClassAndSuperclassNameFromString:str];
     NSString *className = [classAndSuperClassName objectForKey:@"className"];
     NSString *superClassName = [classAndSuperClassName objectForKey:@"superClassName"];
-    NSLog(@"CLASS NAME: %@",className);
+    NSLog(@"CLASS NAME:%@END",className);
     
     Class superClass = NSClassFromString(superClassName);
     Class stubClass = objc_allocateClassPair(superClass, [className UTF8String], 0);
@@ -57,7 +55,7 @@
 //    [obj setN:@(1)];
     [[obj class] performSelector:@selector(sayHello)];
     [obj performSelector:@selector(sayHelloToCaller:) withObject:@""];
-    [obj performSelector:@selector(setN) withObject:@(2)];
+    [obj performSelector:@selector(setN:) withObject:@(5)];
     NSLog(@"N:%@",[obj performSelector:@selector(n)]);
 }
 
@@ -154,7 +152,9 @@ void setter(id self, SEL _cmd, NSObject *newObj){
         NSLog(@"IVAR ADDED?:%i",class_addIvar(class,cIvarName, sizeof(NSObject*), log2(sizeof(NSObject*)), @encode(NSObject*)));
         NSLog(@"PROPERTY ADDED?:%i",class_addProperty(class, cPropName, attrs, (unsigned int)ownModificators.count+2));
         NSLog(@"GETTER ADDED?:%i", class_addMethod(class,NSSelectorFromString(propName), (IMP)getter, "v@:@"));
-        NSLog(@"SETTER ADDED?:%i", class_addMethod(class, NSSelectorFromString([self setterName:propName]), (IMP)setter, "v@:@"));
+        NSString *setterName = [self setterName:propName];
+        NSLog(@"SETTER NAME:%@",setterName);
+        NSLog(@"SETTER ADDED?:%i", class_addMethod(class, NSSelectorFromString(setterName), (IMP)setter, "v@:@"));
     }
 
 }
@@ -247,7 +247,7 @@ NSString* ivarNameFor(NSString* name){
     
     NSString* theRest = [name stringByReplacingCharactersInRange:r withString:@""];
     
-    return [NSString stringWithFormat:@"set%@%@", [firstChar uppercaseString] , theRest];
+    return [NSString stringWithFormat:@"set%@%@:", [firstChar uppercaseString] , theRest];
 }
 
 NSString* propNameFromSetterName(NSString* name) {
@@ -270,6 +270,7 @@ NSString* propNameFromSetterName(NSString* name) {
     Rx* rx = RX(@"@interface (\\D+):\\s*(\\w+)");
     RxMatch* match = [str firstMatchWithDetails:rx];
     NSString *className = [[match.groups objectAtIndex:1] value];
+    className = [className stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSString *superClassName = [[match.groups objectAtIndex:2] value];
     
     NSDictionary *results = [NSDictionary dictionaryWithObjectsAndKeys:className,@"className",superClassName,@"superClassName", nil];
